@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Heap.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">tp2</a> &gt; <a href="index.source.html" class="el_package">aed</a> &gt; <span class="el_source">Heap.java</span></div><h1>Heap.java</h1><pre class="source lang-java linenums">package aed;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+
+public class Heap&lt;T&gt; {
+    
+    private ArrayList&lt;T&gt; data;
+    private Comparator&lt;T&gt; comparador;
+
+
+<span class="fc" id="L12">    public Heap(T[] elems, Comparator&lt;T&gt; c) {</span>
+<span class="fc" id="L13">        data = new ArrayList&lt;T&gt;();</span>
+<span class="fc" id="L14">        comparador = c;</span>
+        
+<span class="fc" id="L16">        int i = 0;</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        while (i &lt; elems.length) {</span>
+<span class="fc" id="L18">            data.add(elems[i]);</span>
+<span class="fc" id="L19">            i++;</span>
+        }
+
+<span class="fc" id="L22">        heapify();</span>
+<span class="fc" id="L23">    }</span>
+    
+    public void heapify() {
+        
+<span class="pc bpc" id="L27" title="1 of 2 branches missed.">        if (data.size() &lt; 2) {</span>
+<span class="nc" id="L28">            return;</span>
+        }
+
+<span class="fc" id="L31">        int i = (data.size() - 1) / 2;</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        while (i &gt;= 0) {</span>
+<span class="fc" id="L33">            siftDown(i);</span>
+<span class="fc" id="L34">            i--;</span>
+        }
+<span class="fc" id="L36">    }</span>
+    
+    public void agregar(T elem) {
+<span class="fc" id="L39">        data.add(elem);</span>
+<span class="fc" id="L40">        actualizarHandle(data.size() - 1, elem);</span>
+<span class="fc" id="L41">        siftUp(data.size() - 1);</span>
+<span class="fc" id="L42">    }</span>
+
+    // Sube el elemento en la posición i hasta que esté en la posición correcta. -&gt; Se usa al agregar un elemento al heap.
+    public void siftUp(int i) {
+        
+<span class="fc" id="L47">        int posHijo = i;</span>
+<span class="fc" id="L48">        int posPadre = (posHijo - 1) / 2;</span>
+<span class="fc" id="L49">        T hijo = data.get(posHijo);</span>
+<span class="fc" id="L50">        T padre = data.get(posPadre);</span>
+        
+<span class="fc bfc" id="L52" title="All 4 branches covered.">        while (posHijo != 0 &amp;&amp; (comparador.compare(padre, hijo) &lt; 0)) {</span>
+            
+<span class="fc" id="L54">            data.set(posHijo, padre);</span>
+<span class="fc" id="L55">            data.set(posPadre, hijo);</span>
+
+<span class="fc" id="L57">            actualizarHandle(posPadre, hijo);</span>
+<span class="fc" id="L58">            actualizarHandle(posHijo, padre);</span>
+            
+<span class="fc" id="L60">            posHijo = posPadre;</span>
+<span class="fc" id="L61">            posPadre = (posHijo - 1) / 2;</span>
+<span class="fc" id="L62">            hijo = data.get(posHijo);</span>
+<span class="fc" id="L63">            padre = data.get(posPadre);</span>
+        }    
+<span class="fc" id="L65">    }</span>
+
+    public void siftDown(int i) {
+        
+<span class="fc" id="L69">        int hijoIzq = 2 * i + 1;</span>
+<span class="fc" id="L70">        int hijoDer = 2 * i + 2;</span>
+<span class="fc" id="L71">        int mayor = i;</span>
+
+<span class="fc bfc" id="L73" title="All 4 branches covered.">        if (hijoIzq &lt; data.size() &amp;&amp; comparador.compare(data.get(hijoIzq), data.get(mayor)) &gt; 0) {</span>
+<span class="fc" id="L74">            mayor = hijoIzq;</span>
+        }
+
+<span class="fc bfc" id="L77" title="All 4 branches covered.">        if (hijoDer &lt; data.size() &amp;&amp; comparador.compare(data.get(hijoDer), data.get(mayor)) &gt; 0) {</span>
+<span class="fc" id="L78">            mayor = hijoDer;</span>
+        }
+
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        if (mayor != i) {</span>
+
+<span class="fc" id="L83">            T temp = data.get(i);</span>
+<span class="fc" id="L84">            T mayorT = data.get(mayor);</span>
+<span class="fc" id="L85">            data.set(i, mayorT);</span>
+<span class="fc" id="L86">            data.set(mayor, temp);</span>
+
+<span class="fc" id="L88">            actualizarHandle(i, mayorT);</span>
+<span class="fc" id="L89">            actualizarHandle(mayor, temp);</span>
+            
+<span class="fc" id="L91">            siftDown(mayor);</span>
+        }
+<span class="fc" id="L93">    }</span>
+
+    public T sacarMaximo() {
+<span class="fc" id="L96">        T raiz = data.get(0);</span>
+
+<span class="fc" id="L98">        T ultimoElemento = data.get(data.size() - 1);</span>
+<span class="fc" id="L99">        data.set(0, ultimoElemento);</span>
+<span class="fc" id="L100">        data.remove(data.size() - 1);</span>
+
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (!data.isEmpty()) {</span>
+<span class="fc" id="L103">            actualizarHandle(0, ultimoElemento);</span>
+<span class="fc" id="L104">            siftDown(0);</span>
+        }
+
+<span class="fc" id="L107">        return raiz;</span>
+    }
+
+    public void eliminar(int i) {
+        
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        if (i == 0) {</span>
+<span class="fc" id="L113">            sacarMaximo();</span>
+<span class="fc" id="L114">            return;</span>
+        }
+
+        // Si es el último elemento lo sacamos
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (i == data.size() - 1) {</span>
+<span class="fc" id="L119">            data.remove(data.size() - 1);</span>
+<span class="fc" id="L120">            return;</span>
+        }
+        
+<span class="fc" id="L123">        T ultimoElemento = data.get(data.size() - 1);</span>
+<span class="fc" id="L124">        data.set(i, ultimoElemento);</span>
+<span class="fc" id="L125">        data.remove(data.size() - 1);</span>
+
+<span class="fc" id="L127">        actualizarHandle(i, ultimoElemento);</span>
+
+<span class="fc" id="L129">        T padre = data.get((i - 1) / 2);</span>
+<span class="pc bpc" id="L130" title="1 of 2 branches missed.">        if (comparador.compare(ultimoElemento, padre) &gt; 0) {</span>
+<span class="nc" id="L131">            siftUp(i);</span>
+        } else {
+<span class="fc" id="L133">            siftDown(i);</span>
+        }
+<span class="fc" id="L135">    }</span>
+
+    private void actualizarHandle(int i, T elem) {
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        if (elem instanceof TrasladoWrapper) {</span>
+<span class="fc" id="L139">            TrasladoWrapper traslado = (TrasladoWrapper) elem;</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">            if (comparador instanceof RedituableComparator) {</span>
+<span class="fc" id="L141">                traslado.handle.setIndexRedituable(i);      // Actualizar índice para heap de redituables</span>
+            } else {
+<span class="fc" id="L143">                traslado.handle.setIndexTimestamp(i);       // Actualizar índice para heap de timestamps</span>
+            }
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">        } else if (elem instanceof Ciudad) {</span>
+<span class="fc" id="L146">            Ciudad ciudad = (Ciudad) elem;</span>
+<span class="fc" id="L147">            ciudad.setIndex(i);             // Actualizar el índice de la ciudad</span>
+        }
+<span class="fc" id="L149">    }</span>
+
+    public int size() {
+<span class="nc" id="L152">        return data.size();</span>
+    }
+
+    public T obtener(int index) {
+<span class="fc" id="L156">        return data.get(index);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.10.202304240956</span></div></body></html>
